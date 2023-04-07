@@ -48,6 +48,7 @@ int32_t slave_transmit[6];
 int32_t slave_receive[6];
 
 int flag_nss;
+int nss_cond;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,15 +65,15 @@ static void MX_SPI2_Init(void);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == SPI_NSS_2_Pin) {
 		if (HAL_GPIO_ReadPin(SPI_NSS_2_GPIO_Port, SPI_NSS_2_Pin)
-				== GPIO_PIN_SET) {
+				== GPIO_PIN_RESET) {
 			flag_nss = 0;
 			HAL_SPI_TransmitReceive_IT(&hspi2, (uint8_t*) slave_transmit,
 					(uint8_t*) slave_receive, 24);
 		}
 		if (HAL_GPIO_ReadPin(SPI_NSS_2_GPIO_Port, SPI_NSS_2_Pin)
-				== GPIO_PIN_RESET) {
+				== GPIO_PIN_SET) {
 			flag_nss = 1;
-//			HAL_SPI_Abort(&hspi2);
+			HAL_SPI_Abort(&hspi2);
 		}
 	}
 }
@@ -119,11 +120,11 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-
+//		nss_cond = HAL_GPIO_ReadPin(SPI_NSS_2_GPIO_Port, SPI_NSS_2_Pin);
 //		if (HAL_GPIO_ReadPin(SPI_NSS_2_GPIO_Port, SPI_NSS_2_Pin) == 0) {
 //			HAL_SPI_TransmitReceive_IT(&hspi2, (uint8_t*) (slave_transmit),
 //					(uint8_t*) (slave_receive), 24);
-//			while (HAL_GPIO_ReadPin(SPI_NSS_2_GPIO_Port, SPI_NSS_2_Pin) == 0) {
+//			while (HAL_GPIO_ReadPin(SPI_NSS_2_GPIO_Port, SPI_NSS_2_Pin) == 1) {
 //
 //			}
 //			HAL_SPI_Abort(&hspi2);
